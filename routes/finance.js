@@ -13,5 +13,25 @@ router
   .patch(finance.updateCategory)
   .delete(finance.deleteCategory)
 
+router
+  .route('/profile')
+  .get(finance.findAllProfile)
+  .post(finance.createProfile)
+
+router
+  .route('/profile/:id')
+  .patch(finance.updateProfile)
+  .delete(finance.deleteProfile)
+
+router
+  .route('/transaction')
+  .get(finance.findAllTransaction)
+  .post(finance.createTransaction)
+
+router
+  .route('/transaction/:id')
+  .get(finance.findOneTransaction)
+  .patch(finance.updateTransaction)
+  .delete(finance.deleteTransaction)
 
 module.exports = router
