@@ -1,22 +1,25 @@
 const db = require('../utils/db')
 const { relation } = require('../models/finance')
+const { Op } = require('sequelize')
 
 module.exports = {
     findAll: (model, include = []) => async (req, res, next) => {
-        let code, result
+        let code, result, where = {}
+
+        if(Object.keys(req.query).length) where = module.exports.queryHandler(req.query)
         
         try{
             await db.authenticate()
             let dbModel = model(db)
             if(include.length) dbModel = relation(dbModel, db, include)
             const dbRes = await dbModel.findAll({
-                include: include.map(each => {return {model: each.model(db), required: each.required}})
+                include: include.map(each => {return {model: each.model(db), required: each.required}}),
+                where
             })
             code = 200
             result = {result: dbRes}
         }
         catch(err) {
-            console.log(err)
             code = 500
             result = {message: err}
         }
@@ -112,5 +115,19 @@ module.exports = {
             result = {message: 'Data gagal dihapus'}
         }
         res.status(code).json(result)
+    },
+    queryHandler: (query) => {
+        let obj = {}
+        Object.keys(query).forEach(each => {
+            if(typeof query[each] != 'object') {
+                obj[each] = query[each]
+            }
+            else {
+                obj[each] = {
+                    [Op[Object.keys(query[each])[0]]]: Object.values(query[each])[0]
+                }
+            }
+        })
+        return (obj)
     }
 }
