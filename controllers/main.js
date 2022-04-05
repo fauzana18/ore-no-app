@@ -4,9 +4,9 @@ const { Op } = require('sequelize')
 
 module.exports = {
     findAll: (model, include = []) => async (req, res, next) => {
-        let code, result, where = {}
+        let code, result, query = {}
 
-        if(Object.keys(req.query).length) where = module.exports.queryHandler(req.query)
+        if(Object.keys(req.query).length) query = module.exports.queryHandler(req.query)
         
         try{
             await db.authenticate()
@@ -14,10 +14,14 @@ module.exports = {
             if(include.length) dbModel = relation(dbModel, db, include)
             const dbRes = await dbModel.findAll({
                 include: include.map(each => {return {model: each.model(db), required: each.required}}),
-                where
+                ...query
             })
+            const total = await dbModel.count({
+                where: query.where
+            })
+
             code = 200
-            result = {result: dbRes}
+            result = {result: dbRes, total}
         }
         catch(err) {
             code = 500
@@ -117,15 +121,22 @@ module.exports = {
         res.status(code).json(result)
     },
     queryHandler: (query) => {
-        let obj = {}
+        let obj = {
+            where: {},
+            limit: query.limit || 10,
+            offset: query.offset || 0
+        }
         Object.keys(query).forEach(each => {
-            if(typeof query[each] != 'object') {
+            if(typeof query[each] == 'object') {
+                obj.where[each] = {
+                    [Op[Object.keys(query[each])[0]]]: Object.values(query[each])[0]
+                }
+            }
+            else if(each == 'limit' || each == 'offset') {
                 obj[each] = query[each]
             }
             else {
-                obj[each] = {
-                    [Op[Object.keys(query[each])[0]]]: Object.values(query[each])[0]
-                }
+                obj.where[each] = query[each]
             }
         })
         return (obj)

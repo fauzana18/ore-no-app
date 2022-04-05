@@ -10,7 +10,7 @@ module.exports = {
     createProfile: main.create(profile),
     updateProfile: main.update(profile),
     deleteProfile: main.delete(profile),
-    findAllTransaction: main.findAll(transaction, [{model: profile, required: true}, {model: category, required: true}]),
+    findAllTransaction: main.findAll(transaction, [{model: category, required: true}]),
     findOneTransaction: main.findOne(transaction),
     createTransaction: main.create(transaction),
     updateTransaction: main.update(transaction),
