@@ -13,6 +13,7 @@ module.exports = {
     findAllTransaction: main.findAll(transaction, ['created', 'DESC'], [{model: category, required: true}]),
     findOneTransaction: main.findOne(transaction),
     createTransaction: main.create(transaction),
+    createBulkTransaction: main.bulkCreate(transaction),
     updateTransaction: main.update(transaction),
     deleteTransaction: main.delete(transaction)
 }

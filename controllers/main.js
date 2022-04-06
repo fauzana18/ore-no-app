@@ -73,6 +73,27 @@ module.exports = {
         }
         res.status(code).json(result)
     },
+    bulkCreate: (model) => async (req, res, next) => {
+        let code, result, transaction
+        
+        try{
+            await db.authenticate()
+            transaction = await db.transaction()
+            const dbModel = model(db)
+            const dbRes = await dbModel.bulkCreate(req.body, {
+                transaction
+            })
+            await transaction.commit()
+            code = 200
+            result = {message: 'Data berhasil disimpan'}
+        }
+        catch(err) {
+            await transaction.rollback()
+            code = 500
+            result = {message: 'Data gagal disimpan'}
+        }
+        res.status(code).json(result)
+    },
     update: (model) => async (req, res, next) => {
         let code, result, transaction
         

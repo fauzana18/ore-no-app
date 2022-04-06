@@ -34,4 +34,6 @@ router
   .patch(finance.updateTransaction)
   .delete(finance.deleteTransaction)
 
+router.post('/importtransaction', finance.createBulkTransaction)
+
 module.exports = router
