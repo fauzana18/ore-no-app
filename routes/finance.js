@@ -35,5 +35,6 @@ router
   .delete(finance.deleteTransaction)
 
 router.post('/importtransaction', finance.createBulkTransaction)
+router.get('/saldo', finance.getSaldo)
 
 module.exports = router

@@ -14,7 +14,7 @@ module.exports = {
             let dbModel = model(db)
             if(include.length) dbModel = relation(dbModel, db, include)
             const dbRes = await dbModel.findAll({
-                include: include.map(each => {return {model: each.model(db), required: each.required}}),
+                include: include.map(each => {return {model: each.model(db), required: each.required, ...query.child}}),
                 ...query
             })
             const total = await dbModel.count({
@@ -148,6 +148,9 @@ module.exports = {
             limit: query.limit || 10,
             offset: query.offset || 0
         }
+        let child = {
+            where: {}
+        }
         Object.keys(query).forEach(each => {
             if(typeof query[each] == 'object') {
                 obj.where[each] = {
@@ -162,9 +165,13 @@ module.exports = {
                 obj[each] = [[splitted[0], splitted[1]]]
             }
             else {
-                obj.where[each] = query[each]
+                if(!each.match('c_')) obj.where[each] = query[each]
+                else {
+                    child.where[each.replace('c_', '')] = query[each]
+                }
             }
         })
+        obj.child = child
         return (obj)
     }
 }
