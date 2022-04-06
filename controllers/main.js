@@ -7,7 +7,7 @@ module.exports = {
         let code, result, query = {}
 
         if(Object.keys(req.query).length) query = module.exports.queryHandler(req.query)
-        query.order = [sort]
+        if (!query.order) query.order = [sort]
         
         try{
             await db.authenticate()
@@ -156,6 +156,10 @@ module.exports = {
             }
             else if(each == 'limit' || each == 'offset') {
                 obj[each] = query[each]
+            }
+            else if(each == 'order') {
+                let splitted = query[each].split(',')
+                obj[each] = [[splitted[0], splitted[1]]]
             }
             else {
                 obj.where[each] = query[each]
