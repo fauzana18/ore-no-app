@@ -2,15 +2,15 @@ const { category, profile, transaction } = require('../models/finance')
 const main = require('./main')
 
 module.exports = {
-    findAllCategory: main.findAll(category),
+    findAllCategory: main.findAll(category, ['name', 'ASC']),
     createCategory: main.create(category),
     updateCategory: main.update(category),
     deleteCategory: main.delete(category),
-    findAllProfile: main.findAll(profile),
+    findAllProfile: main.findAll(profile, ['id', 'ASC']),
     createProfile: main.create(profile),
     updateProfile: main.update(profile),
     deleteProfile: main.delete(profile),
-    findAllTransaction: main.findAll(transaction, [{model: category, required: true}]),
+    findAllTransaction: main.findAll(transaction, ['created', 'DESC'], [{model: category, required: true}]),
     findOneTransaction: main.findOne(transaction),
     createTransaction: main.create(transaction),
     updateTransaction: main.update(transaction),

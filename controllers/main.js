@@ -3,10 +3,11 @@ const { relation } = require('../models/finance')
 const { Op } = require('sequelize')
 
 module.exports = {
-    findAll: (model, include = []) => async (req, res, next) => {
+    findAll: (model, sort, include = []) => async (req, res, next) => {
         let code, result, query = {}
 
         if(Object.keys(req.query).length) query = module.exports.queryHandler(req.query)
+        query.order = [sort]
         
         try{
             await db.authenticate()
