@@ -1,12 +1,12 @@
 const db = require('../utils/db')
 const { relation } = require('../models/finance')
-const { Op } = require('sequelize')
+const { Op, where, fn, col } = require('sequelize')
 
 module.exports = {
     findAll: (model, sort, include = []) => async (req, res, next) => {
         let code, result, query = {}
 
-        if(Object.keys(req.query).length) query = module.exports.queryHandler(req.query)
+        if(Object.keys(req.query).length) query = module.exports.queryHandler(req.query, model.name)
         if (!query.order) query.order = [sort]
         
         try{
@@ -142,7 +142,7 @@ module.exports = {
         }
         res.status(code).json(result)
     },
-    queryHandler: (query) => {
+    queryHandler: (query, table) => {
         let obj = {
             where: {},
             limit: query.limit || 10,
@@ -153,9 +153,11 @@ module.exports = {
         }
         Object.keys(query).forEach(each => {
             if(typeof query[each] == 'object') {
-                obj.where[each] = {
-                    [Op[Object.keys(query[each])[0]]]: Object.values(query[each])[0]
-                }
+                obj.where[each] = {}
+                Object.keys(query[each]).forEach(el => {
+                    if(el != 'like') obj.where[each][Op[el]] = query[each][el]
+                    else obj.where[each] = where(fn('LOWER', col(`${table}.${each}`)), 'LIKE', query[each][el])
+                })
             }
             else if(each == 'limit' || each == 'offset') {
                 obj[each] = query[each]
