@@ -1,5 +1,5 @@
 const db = require('../utils/db')
-const { relation } = require('../models/finance')
+const { hasOne, hasMany } = require('../models/finance')
 const { Op, where, fn, col } = require('sequelize')
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         try{
             await db.authenticate()
             let dbModel = model(db)
-            if(include.length) dbModel = relation(dbModel, db, include)
+            if(include.length) dbModel = hasOne(dbModel, db, include)
             const dbRes = await dbModel.findAll({
                 include: include.map(each => {return {model: each.model(db), required: each.required, ...query.child}}),
                 ...query
@@ -36,7 +36,7 @@ module.exports = {
         try{
             await db.authenticate()
             let dbModel = model(db)
-            if(include.length) dbModel = relation(dbModel, db, include)
+            if(include.length) dbModel = hasOne(dbModel, db, include)
             const dbRes = await dbModel.findOne({
                 where: {
                     id: req.params.id
@@ -121,17 +121,21 @@ module.exports = {
         }
         res.status(code).json(result)
     },
-    delete: (model) => async (req, res, next) => {
+    delete: (model, include = []) => async (req, res, next) => {
         let code, result, transaction
         
         try{
             await db.authenticate()
             transaction = await db.transaction()
-            const dbModel = model(db)
-            const dbRes = await dbModel.destroy({
+            let dbModel = model(db)
+            if(include.length) dbModel = hasMany(dbModel, db, include)
+            const data = await dbModel.findOne({
                 where: {
                     id: req.params.id
                 },
+                transaction
+            })
+            const dbRes = await data.destroy({
                 transaction
             })
             await transaction.commit()

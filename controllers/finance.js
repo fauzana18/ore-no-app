@@ -6,7 +6,7 @@ module.exports = {
     findAllCategory: main.findAll(category, ['name', 'ASC']),
     createCategory: main.create(category),
     updateCategory: main.update(category),
-    deleteCategory: main.delete(category),
+    deleteCategory: main.delete(category, [{model: transaction, required: false}]),
     findAllProfile: main.findAll(profile, ['id', 'ASC']),
     createProfile: main.create(profile),
     updateProfile: main.update(profile),
