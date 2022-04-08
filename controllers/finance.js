@@ -10,7 +10,7 @@ module.exports = {
     findAllProfile: main.findAll(profile, ['id', 'ASC']),
     createProfile: main.create(profile),
     updateProfile: main.update(profile),
-    deleteProfile: main.delete(profile),
+    deleteProfile: main.delete(profile, [{model: transaction, required: false}]),
     findAllTransaction: main.findAll(transaction, ['created', 'DESC'], [{model: category, required: true}]),
     findOneTransaction: main.findOne(transaction),
     createTransaction: main.create(transaction),
