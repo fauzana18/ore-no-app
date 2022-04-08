@@ -145,8 +145,8 @@ module.exports = {
     queryHandler: (query, table) => {
         let obj = {
             where: {},
-            limit: query.limit || 10,
-            offset: query.offset || 0
+            limit: query.limit || undefined,
+            offset: query.offset || undefined
         }
         let child = {
             where: {}
