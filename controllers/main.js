@@ -64,7 +64,10 @@ module.exports = {
             })
             await transaction.commit()
             code = 200
-            result = {message: 'Data berhasil dibuat'}
+            result = {
+                message: 'Data berhasil dibuat',
+                result: dbRes
+            }
         }
         catch(err) {
             await transaction.rollback()
