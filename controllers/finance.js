@@ -42,9 +42,10 @@ module.exports = {
                 saldo[element.category.type.toLowerCase()] += element.amount
                 
                 if(saldo.monthly[`${month}_${year}`] == undefined) {
-                    saldo.monthly[`${month}_${year}`] = {pengeluaran: 0, pemasukan: 0}
+                    saldo.monthly[`${month}_${year}`] = {pengeluaran: 0, pemasukan: 0, count: 0}
                 }
                 saldo.monthly[`${month}_${year}`][element.category.type.toLowerCase()] += element.amount
+                saldo.monthly[`${month}_${year}`].count++
 
                 if(saldo.categorized[element.category.name.replace(' ', '_')] == undefined) {
                     saldo.categorized[element.category.name.replace(' ', '_')] = {pengeluaran: 0, pemasukan: 0}
