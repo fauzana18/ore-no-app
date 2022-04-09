@@ -18,7 +18,7 @@ module.exports = {
     updateTransaction: main.update(transaction),
     deleteTransaction: main.delete(transaction),
     getSaldo: async (req, res, next) => {
-        let code, result, saldo = { pengeluaran: 0, pemasukan: 0 }
+        let code, result, saldo = { pengeluaran: 0, pemasukan: 0, monthly: {}, categorized: {} }
         try{
             await db.authenticate()
             let transactionModel = transaction(db)
@@ -28,15 +28,26 @@ module.exports = {
                 foreignKey: 'id'
             })
             const dbRes = await transactionModel.findAll({
-                include: [{model: categoryModel, attributes: ['type'], required: true}],
-                attributes: ['amount'],
+                include: [{model: categoryModel, attributes: ['type', 'name'], required: true}],
+                attributes: ['amount', 'created' ],
                 where: {
                     profile_id: req.query.profile_id
                 }
             })
 
             dbRes.forEach(element => {
+                const date = new Date(element.created)
                 saldo[element.category.type.toLowerCase()] += element.amount
+                
+                if(saldo.monthly[`${date.getMonth()}_${date.getFullYear()}`] == undefined) {
+                    saldo.monthly[`${date.getMonth()}_${date.getFullYear()}`] = {pengeluaran: 0, pemasukan: 0}
+                }
+                saldo.monthly[`${date.getMonth()}_${date.getFullYear()}`][element.category.type.toLowerCase()] += element.amount
+
+                if(saldo.categorized[element.category.name.replace(' ', '_')] == undefined) {
+                    saldo.categorized[element.category.name.replace(' ', '_')] = {pengeluaran: 0, pemasukan: 0}
+                }
+                saldo.categorized[element.category.name.replace(' ', '_')][element.category.type.toLowerCase()] += element.amount
             });
 
             code = 200
