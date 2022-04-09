@@ -54,8 +54,6 @@ module.exports = {
                 }
                 saldo.categorized[element.category.name.replace(' ', '_')][element.category.type.toLowerCase()] += element.amount
             })
-            const date = new Date(dbRes[0].created).getTimezoneOffset()
-            saldo.tz = date
 
             code = 200
             result = saldo
