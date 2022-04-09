@@ -1,3 +1,4 @@
+const moment = require('moment')
 const { category, profile, transaction } = require('../models/finance')
 const main = require('./main')
 const db = require('../utils/db')
@@ -36,13 +37,14 @@ module.exports = {
             })
 
             dbRes.forEach(element => {
-                const date = new Date(element.created)
+                const month = moment(element.created).format("M") - 1
+                const year = moment(element.created).format("YYYY")
                 saldo[element.category.type.toLowerCase()] += element.amount
                 
-                if(saldo.monthly[`${date.getMonth()}_${date.getFullYear()}`] == undefined) {
-                    saldo.monthly[`${date.getMonth()}_${date.getFullYear()}`] = {pengeluaran: 0, pemasukan: 0}
+                if(saldo.monthly[`${month}_${year}`] == undefined) {
+                    saldo.monthly[`${month}_${year}`] = {pengeluaran: 0, pemasukan: 0}
                 }
-                saldo.monthly[`${date.getMonth()}_${date.getFullYear()}`][element.category.type.toLowerCase()] += element.amount
+                saldo.monthly[`${month}_${year}`][element.category.type.toLowerCase()] += element.amount
 
                 if(saldo.categorized[element.category.name.replace(' ', '_')] == undefined) {
                     saldo.categorized[element.category.name.replace(' ', '_')] = {pengeluaran: 0, pemasukan: 0}
