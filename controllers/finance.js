@@ -1,7 +1,7 @@
-const moment = require('moment')
 const { category, profile, transaction } = require('../models/finance')
 const main = require('./main')
 const db = require('../utils/db')
+const convertTZ = require('../utils/date')
 
 module.exports = {
     findAllCategory: main.findAll(category, ['name', 'ASC']),
@@ -37,8 +37,10 @@ module.exports = {
             })
 
             dbRes.forEach(element => {
-                const month = moment(element.created).format("M") - 1
-                const year = moment(element.created).format("YYYY")
+                const date = new Date(element.created)
+                const newDate = convertTZ(date, "Asia/Jakarta")
+                const month = newDate.getMonth()
+                const year = newDate.getFullYear()
                 saldo[element.category.type.toLowerCase()] += element.amount
                 
                 if(saldo.monthly[`${month}_${year}`] == undefined) {
