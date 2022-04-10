@@ -1,4 +1,5 @@
 const db = require('../utils/db')
+const convertTZ = require('../utils/date')
 const { hasOne, hasMany } = require('../models/finance')
 const { Op, where, fn, col } = require('sequelize')
 
@@ -162,7 +163,7 @@ module.exports = {
             if(typeof query[each] == 'object') {
                 obj.where[each] = {}
                 Object.keys(query[each]).forEach(el => {
-                    if(el != 'like') obj.where[each][Op[el]] = query[each][el]
+                    if(el != 'like') obj.where[each][Op[el]] = convertTZ(query[each][el], "Asia/Jakarta")
                     else obj.where[each] = where(fn('LOWER', col(`${table}.${each}`)), 'LIKE', query[each][el])
                 })
             }
