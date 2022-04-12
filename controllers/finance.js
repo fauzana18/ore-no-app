@@ -2,6 +2,7 @@ const { category, profile, transaction } = require('../models/finance')
 const main = require('./main')
 const db = require('../utils/db')
 const convertTZ = require('../utils/date')
+const { Op } = require('sequelize')
 
 module.exports = {
     findAllCategory: main.findAll(category, ['name', 'ASC']),
@@ -19,7 +20,18 @@ module.exports = {
     updateTransaction: main.update(transaction),
     deleteTransaction: main.delete(transaction),
     getSaldo: async (req, res, next) => {
-        let code, result, saldo = { pengeluaran: 0, pemasukan: 0, monthly: {}, categorized: {} }
+        let code, result, query = { where: {} }, saldo = { pengeluaran: 0, pemasukan: 0, monthly: {}, categorized: {} }
+
+        Object.keys(req.query).forEach(each => {
+            if(typeof req.query[each] == 'object') {
+                query.where[each] = {}
+                Object.keys(req.query[each]).forEach(el => {
+                    query.where[each][Op[el]] = req.query[each][el]
+                })
+            }
+            else query.where[each] = req.query[each]
+        })
+
         try{
             await db.authenticate()
             let transactionModel = transaction(db)
@@ -31,9 +43,7 @@ module.exports = {
             const dbRes = await transactionModel.findAll({
                 include: [{model: categoryModel, attributes: ['type', 'name'], required: true}],
                 attributes: ['amount', 'created' ],
-                where: {
-                    profile_id: req.query.profile_id
-                }
+                ...query
             })
 
             dbRes.forEach(element => {
