@@ -36,5 +36,6 @@ router
 
 router.post('/importtransaction', finance.createBulkTransaction)
 router.get('/saldo', finance.getSaldo)
+router.get('/saldoall', finance.getSaldoTotal)
 
 module.exports = router

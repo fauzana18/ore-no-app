@@ -73,5 +73,34 @@ module.exports = {
             result = {message: err}
         }
         res.status(code).json(result)
+    },
+    getSaldoTotal: async (req, res, next) => {
+        let code, result, saldo = { pengeluaran: 0, pemasukan: 0 }
+
+        try{
+            await db.authenticate()
+            let transactionModel = transaction(db)
+            let categoryModel = category(db)
+            transactionModel.hasOne(categoryModel, {
+                sourceKey: `category_id`,
+                foreignKey: 'id'
+            })
+            const dbRes = await transactionModel.findAll({
+                include: [{model: categoryModel, attributes: ['type', 'name'], required: true}],
+                attributes: ['amount', 'created' ]
+            })
+
+            dbRes.forEach(element => {
+                saldo[element.category.type.toLowerCase()] += element.amount
+            })
+
+            code = 200
+            result = saldo
+        }
+        catch(err) {
+            code = 500
+            result = {message: err}
+        }
+        res.status(code).json(result)
     }
 }
