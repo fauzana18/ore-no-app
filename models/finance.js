@@ -27,6 +27,10 @@ const profile = (orm) => {
         name: {
           type: Sequelize.STRING(255),
           allowNull: false,
+        },
+        color: {
+          type: Sequelize.STRING(255),
+          allowNull: true,
         }
       },
       {
