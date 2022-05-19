@@ -1,5 +1,5 @@
 const db = require('../utils/db')
-const { hasOne, hasMany } = require('../models/finance')
+const { hasOne, hasMany } = require('../models/main')
 const { Op, where, fn, col } = require('sequelize')
 
 module.exports = {

@@ -7,6 +7,7 @@ const logger = require('morgan')
 const cors = require('cors');
 
 const financeRouter = require('./routes/finance')
+const workoutRouter = require('./routes/workout')
 const usersRouter = require('./routes/users')
 
 const app = express()
@@ -26,6 +27,7 @@ app.use('/', express.Router().get('/', function(req, res, next) {
     res.render('index', { title: 'Ore no App' })
 }))
 app.use('/finance', financeRouter)
+app.use('/workout', workoutRouter)
 app.use('/users', usersRouter)
 
 // catch 404 and forward to error handler

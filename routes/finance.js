@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const finance = require('../controllers/finance')
 
-/* GET home page. */
 router
   .route('/category')
   .get(finance.findAllCategory)
