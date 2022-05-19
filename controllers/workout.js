@@ -4,7 +4,7 @@ const db = require('../utils/db')
 const convertTZ = require('../utils/date')
 
 module.exports = {
-    findAll: main.findAll(workout, ['date', 'DESC'], [{model: movement, required: true}]),
+    findAll: main.findAll(workout, ['movement_id', 'ASC'], [{model: movement, required: true}]),
     update: main.update(workout),
     create: async (req, res, next) => {
         let code, result, transaction
