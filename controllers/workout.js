@@ -47,5 +47,27 @@ module.exports = {
             result = {message: 'Data gagal disimpan'}
         }
         res.status(code).json(result)
+    },
+    delete: async (req, res, next) => {
+        let code, result, transaction
+        
+        try{
+            await db.authenticate()
+            transaction = await db.transaction()
+            let workoutModel = workout(db)
+            const dbRes = await workoutModel.destroy({
+                where: { id: req.body.ids },
+                transaction
+            })
+            await transaction.commit()
+            code = 200
+            result = {message: 'Data berhasil dihapus'}
+        }
+        catch(err) {
+            await transaction.rollback()
+            code = 500
+            result = {message: 'Data gagal dihapus'}
+        }
+        res.status(code).json(result)
     }
 }
