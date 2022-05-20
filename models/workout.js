@@ -56,6 +56,10 @@ const workout = (orm) => {
             type: Sequelize.INTEGER,
             allowNull: false,
           },
+          note: {
+            type: Sequelize.STRING(255),
+            allowNull: true,
+          },
           date: {
             type: Sequelize.DATE,
             allowNull: false,

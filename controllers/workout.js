@@ -30,6 +30,7 @@ module.exports = {
                     set1: 0,
                     set2: 0,
                     set3: 0,
+                    note: '',
                     date: convertTZ(date, "Asia/Jakarta")
                 }
             })
