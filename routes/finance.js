@@ -33,6 +33,16 @@ router
   .patch(finance.updateTransaction)
   .delete(finance.deleteTransaction)
 
+router
+  .route('/plan')
+  .get(finance.findAllPlan)
+  .post(finance.createPlan)
+
+router
+  .route('/plan/:id')
+  .patch(finance.updatePlan)
+  .delete(finance.deletePlan)
+
 router.post('/importtransaction', finance.createBulkTransaction)
 router.get('/saldo', finance.getSaldo)
 router.get('/saldoall', finance.getSaldoTotal)

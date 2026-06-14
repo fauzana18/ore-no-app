@@ -73,8 +73,46 @@ const transaction = (orm) => {
   )
 }
 
+const plan = (orm) => {
+  return orm.define(
+      'plan',
+      {
+        name: {
+          type: Sequelize.STRING(255),
+          allowNull: false,
+        },
+        amount: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
+        type: {
+          type: Sequelize.STRING(10),
+          allowNull: false,
+        },
+        month: {
+          type: Sequelize.STRING(20),
+          allowNull: false,
+        },
+        year: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
+        created: {
+          type: Sequelize.DATE,
+          allowNull: false,
+          defaultValue: Sequelize.NOW
+        }
+      },
+      {
+        timestamps: false,
+        tableName: 'plan',
+      }
+  )
+}
+
 module.exports = {
     category,
     profile,
-    transaction
+    transaction,
+    plan
 }

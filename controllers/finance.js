@@ -1,4 +1,4 @@
-const { category, profile, transaction } = require('../models/finance')
+const { category, profile, transaction, plan } = require('../models/finance')
 const main = require('./main')
 const db = require('../utils/db')
 const convertTZ = require('../utils/date')
@@ -19,6 +19,10 @@ module.exports = {
     createBulkTransaction: main.bulkCreate(transaction),
     updateTransaction: main.update(transaction),
     deleteTransaction: main.delete(transaction),
+    findAllPlan: main.findAll(plan, ['created', 'ASC']),
+    createPlan: main.create(plan),
+    updatePlan: main.update(plan),
+    deletePlan: main.delete(plan),
     getSaldo: async (req, res, next) => {
         let code, result, query = { where: {} }, saldo = { pengeluaran: 0, pemasukan: 0, monthly: {}, categorized: {} }
 
