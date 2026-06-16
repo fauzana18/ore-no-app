@@ -121,6 +121,30 @@ module.exports = {
         }
         res.status(code).json(result)
     },
+    updateHistorical: (model) => async (req, res, next) => {
+        let code, result, transaction
+        
+        try{
+            await db.authenticate()
+            transaction = await db.transaction()
+            const dbModel = model(db)
+            const dbUpdate = await dbModel.update({active: false}, {
+                where: {id: req.params.id, active: true},
+                transaction
+            })
+            delete req.body.id
+            const dbRes = await dbModel.create(req.body, {transaction})
+            await transaction.commit()
+            code = 200
+            result = {message: 'Data berhasil diubah'}
+        }
+        catch(err) {
+            await transaction.rollback()
+            code = 500
+            result = {message: 'Data gagal diubah'}
+        }
+        res.status(code).json(result)
+    },
     delete: (model, include = []) => async (req, res, next) => {
         let code, result, transaction
         

@@ -9,6 +9,7 @@ const cors = require('cors');
 const financeRouter = require('./routes/finance')
 const workoutRouter = require('./routes/workout')
 const usersRouter = require('./routes/users')
+const dataRouter = require('./routes/data')
 
 const app = express()
 
@@ -29,6 +30,7 @@ app.use('/', express.Router().get('/', function(req, res, next) {
 app.use('/finance', financeRouter)
 app.use('/workout', workoutRouter)
 app.use('/users', usersRouter)
+app.use('/data', dataRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
