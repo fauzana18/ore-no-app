@@ -1,5 +1,5 @@
 const main = require('./main')
-const { vault, vault_item } = require('../models/data')
+const { vault, vault_item, notes } = require('../models/data')
 const db = require('../utils/db')
 const convertTZ = require('../utils/date')
 const { col } = require('sequelize')
@@ -74,13 +74,16 @@ module.exports = {
                 transaction
             })
 
-            const dbUpdateItem = await vaultItemModel.update({active: false}, {
-                where: {vault_id: req.params.id, active: true},
-                transaction
-            })
+            if(req.body.changed) {
+                const dbUpdateItem = await vaultItemModel.update({active: false}, {
+                    where: {vault_id: req.params.id, active: true},
+                    transaction
+                })
+                
+                const {nonce, ciphertext} = req.body
+                const dbCreateItem = await vaultItemModel.create({nonce, ciphertext, vault_id: req.params.id}, {transaction})
+            }
             
-            const {nonce, ciphertext} = req.body
-            const dbCreateItem = await vaultItemModel.create({nonce, ciphertext, vault_id: req.params.id}, {transaction})
             await transaction.commit()
             code = 200
             result = {message: 'Data berhasil diubah'}
@@ -140,5 +143,9 @@ module.exports = {
             result = {message: err}
         }
         res.status(code).json(result)
-    }
+    },
+    findAllNotes: main.findAll(notes, ['created', 'DESC']),
+    createNotes: main.create(notes),
+    updateNotes: main.update(notes),
+    deleteNotes: main.delete(notes),
 }

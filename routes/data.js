@@ -13,4 +13,14 @@ router
   .patch(data.updateVault)
   .delete(data.deleteVault)
 
+
+router
+  .route('/notes')
+  .get(data.findAllNotes)
+  .post(data.createNotes)
+
+router
+  .route('/notes/:id')
+  .patch(data.updateNotes)
+  .delete(data.deleteNotes)
 module.exports = router

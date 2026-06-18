@@ -20,6 +20,7 @@ const vault = (orm) => {
       }
   )
 }
+
 const vault_item = (orm) => {
   return orm.define(
       'vault_item',
@@ -54,7 +55,37 @@ const vault_item = (orm) => {
   )
 }
 
+const notes = (orm) => {
+  return orm.define(
+      'notes',
+      {
+        title: {
+          type: Sequelize.STRING(300),
+          allowNull: false,
+        },
+        nonce: {
+          type: Sequelize.TEXT,
+          allowNull: false,
+        },
+        ciphertext: {
+          type: Sequelize.TEXT,
+          allowNull: false,
+        },
+        created: {
+          type: Sequelize.DATE,
+          allowNull: false,
+          defaultValue: Sequelize.NOW
+        }
+      },
+      {
+        timestamps: false,
+        tableName: 'notes',
+      }
+  )
+}
+
 module.exports = {
     vault,
-    vault_item
+    vault_item,
+    notes
 }
