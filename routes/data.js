@@ -16,8 +16,14 @@ router
 
 router
   .route('/notes')
-  .get(data.findAllNotes)
+  // .get(data.findAllNotes)
   .post(data.createNotes)
+
+router.get('/notes', async (req, res, next) => {
+    res.set('Cache-Control', 'no-store')
+
+    data.findAllNotes(req, res, next)
+})
 
 router
   .route('/notes/:id')
