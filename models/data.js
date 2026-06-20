@@ -84,8 +84,38 @@ const notes = (orm) => {
   )
 }
 
+const tasklist = (orm) => {
+  return orm.define(
+      'tasklist',
+      {
+        user_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
+        nonce: {
+          type: Sequelize.TEXT,
+          allowNull: false,
+        },
+        ciphertext: {
+          type: Sequelize.TEXT,
+          allowNull: false,
+        },
+        created: {
+          type: Sequelize.DATE,
+          allowNull: false,
+          defaultValue: Sequelize.NOW
+        }
+      },
+      {
+        timestamps: false,
+        tableName: 'tasklist',
+      }
+  )
+}
+
 module.exports = {
     vault,
     vault_item,
-    notes
+    notes,
+    tasklist
 }

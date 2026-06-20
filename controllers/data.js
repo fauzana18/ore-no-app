@@ -1,5 +1,5 @@
 const main = require('./main')
-const { vault, vault_item, notes } = require('../models/data')
+const { vault, vault_item, notes, tasklist } = require('../models/data')
 const db = require('../utils/db')
 const convertTZ = require('../utils/date')
 const { col } = require('sequelize')
@@ -148,4 +148,47 @@ module.exports = {
     createNotes: main.create(notes),
     updateNotes: main.update(notes),
     deleteNotes: main.delete(notes),
+
+    getTaskList: async (req, res, next) => {
+        let code, result
+        
+        try{
+            await db.authenticate()
+            const tasklistModel = tasklist(db)
+
+            const dbRes = await tasklistModel.findOne({
+                where: { user_id: req.params.userid }
+            })
+
+            code = 200
+            result = {result: dbRes}
+        }
+        catch(err) {
+            code = 500
+            result = {message: err}
+        }
+        res.status(code).json(result)
+    },
+    saveTaskList: async (req, res, next) => {
+        let code, result, transaction
+        
+        try{
+            await db.authenticate()
+            transaction = await db.transaction()
+            const tasklistModel = tasklist(db)
+
+            if(!req.body.id) await tasklistModel.create(req.body, { transaction })
+            else await tasklistModel.update(req.body, { where: { id: req.body.id }, transaction })
+            
+            await transaction.commit()
+            code = 200
+            result = {message: 'Data berhasil disimpan'}
+        }
+        catch(err) {
+            await transaction.rollback()
+            code = 500
+            result = {message: 'Data gagal disimpan'}
+        }
+        res.status(code).json(result)
+    },
 }

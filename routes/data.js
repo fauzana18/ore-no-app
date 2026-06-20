@@ -29,4 +29,12 @@ router
   .route('/notes/:id')
   .patch(data.updateNotes)
   .delete(data.deleteNotes)
+
+router
+  .route('/tasklist/:userid')
+  .get(data.getTaskList)
+
+router
+  .route('/tasklist')
+  .post(data.saveTaskList)
 module.exports = router
